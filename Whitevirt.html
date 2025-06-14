@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>WhiteVirts - Покупка и продажа виртуальной валюты</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+        
+        :root {
+            --neon-purple: #bc13fe;
+            --neon-blue: #6a11cb;
+            --dark-bg: #0a0a0f;
+            --card-bg: rgba(20, 20, 30, 0.9);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--dark-bg);
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.08) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(106, 17, 203, 0.08) 0%, transparent 20%);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(188, 19, 254, 0.15);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 5rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 0 0 15px var(--neon-purple), 
+                         0 0 30px var(--neon-purple);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 30px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 16px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 5px 20px rgba(106, 17, 203, 0.3);
+            font-size: 1.1rem;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--neon-purple), #8a2be2);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(188, 19, 254, 0.5);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn i {
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 70px;
+            position: relative;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+
+        .about-section {
+            text-align: center;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            position: relative;
+            z-index: 2;
+            padding: 0 20px;
+        }
+
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(106, 17, 203, 0.08), rgba(188, 19, 254, 0.08));
+            clip-path: polygon(0 0, 100% 10%, 100% 90%, 0 100%);
+        }
+
+        .telegram-link {
+            color: var(--neon-purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .telegram-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-purple);
+            transition: var(--transition);
+        }
+
+        .telegram-link:hover {
+            color: #d8bfd8;
+        }
+
+        .telegram-link:hover::after {
+            width: 100%;
+            background: #d8bfd8;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            margin: 50px 0;
+        }
+
+        .benefit-card {
+            background: var(--card-bg);
+            padding: 35px 30px;
+            border-radius: 20px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(106, 17, 203, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .benefit-card:nth-child(2) { animation-delay: 0.1s; }
+        .benefit-card:nth-child(3) { animation-delay: 0.2s; }
+        .benefit-card:nth-child(4) { animation-delay: 0.3s; }
+        .benefit-card:nth-child(5) { animation-delay: 0.4s; }
+        .benefit-card:nth-child(6) { animation-delay: 0.5s; }
+
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
+            transition: var(--transition);
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(188, 19, 254, 0.3);
+            border-color: rgba(188, 19, 254, 0.5);
+        }
+
+        .benefit-card:hover::before {
+            height: 100%;
+        }
+
+        .benefit-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            display: block;
+            color: var(--neon-purple);
+            transition: var(--transition);
+        }
+
+        .benefit-card:hover .benefit-icon {
+            color: #d8bfd8;
+            transform: scale(1.1);
+        }
+
+        .benefit-card h3 {
+            font-size: 1.7rem;
+            margin-bottom: 20px;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .benefit-card p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .project {
+            padding: 25px 15px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(106, 17, 203, 0.3);
+            transform: scale(0.95);
+            opacity: 0;
+            animation: scaleIn 0.5s ease-out forwards;
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .project:nth-child(1) { animation-delay: 0.1s; }
+        .project:nth-child(2) { animation-delay: 0.2s; }
+        .project:nth-child(3) { animation-delay: 0.3s; }
+        .project:nth-child(4) { animation-delay: 0.4s; }
+
+        .project:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(188, 19, 254, 0.3);
+            border-color: rgba(188, 19, 254, 0.5);
+            background: linear-gradient(45deg, rgba(106, 17, 203, 0.2), rgba(188, 19, 254, 0.2));
+        }
+
+        .promo-banner {
+            background: linear-gradient(45deg, #6a11cb, #bc13fe);
+            padding: 50px;
+            border-radius: 20px;
+            margin: 70px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform: perspective(1000px) rotateX(5deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .promo-banner h3 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+            letter-spacing: 1px;
+        }
+
+        .promo-banner p {
+            font-size: 1.3rem;
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .reviews-section {
+            text-align: center;
+            padding: 100px 0;
+        }
+
+        /* Обновленный стиль для счетчика */
+        .counter-wrapper {
+            display: inline-flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .reviews-counter {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 40px 0;
+            background: linear-gradient(45deg, #d8bfd8, var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .counter-plus {
+            font-size: 3.5rem;
+            color: var(--neon-purple);
+            margin-left: 5px;
+            vertical-align: baseline;
+            line-height: 1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 70px 0 40px;
+            position: relative;
+            background: rgba(10, 10, 15, 0.95);
+            border-top: 1px solid rgba(106, 17, 203, 0.3);
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .copyright {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.5px;
+        }
+
+        .support-badge {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: linear-gradient(45deg, var(--neon-purple), #8a2be2);
+            padding: 20px;
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(188, 19, 254, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            animation: pulse 2s infinite;
+        }
+
+        .support-badge:hover {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 0 35px rgba(188, 19, 254, 1);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .headset-icon {
+            width: 35px;
+            height: 35px;
+            fill: white;
+        }
+
+        /* SVG иконки */
+        .icon-svg {
+            width: 26px;
+            height: 26px;
+            margin-right: 15px;
+            fill: currentColor;
+        }
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 3.5rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 320px;
+                justify-content: center;
+                padding: 15px 25px;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .promo-banner {
+                padding: 30px 20px;
+            }
+            
+            .promo-banner h3 {
+                font-size: 1.8rem;
+            }
+            
+            .reviews-counter {
+                font-size: 3.5rem;
+            }
+            
+            .counter-plus {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <header>
+        <div class="container header-content">
+            <div class="logo-text">WHITEVIRTS</div>
+            <p class="subtitle">Продаём вирты с 2023 года</p>
+            
+            <div class="cta-buttons">
+                <a href="https://t.me/whitevirts_ru" class="btn telegram-contact" rel="noopener noreferrer">
+                    <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.91 3.79L20.3 20.84c-.25 1.21-.98 1.5-2 .94l-5.5-4.07-2.66 2.57c-.3.3-.55.56-1.1.56-.72 0-.6-.27-.84-.95L6.3 13.7l-5.45-1.7c-1.18-.35-1.19-1.16.26-1.75l21.26-8.2c.97-.43 1.9.24 1.53 1.73z"/>
+                    </svg>
+                    Связаться
+                </a>
+                <a href="https://t.me/whitevirtsdeals" class="btn telegram-group" rel="noopener noreferrer">
+                    <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.91 3.79L20.3 20.84c-.25 1.21-.98 1.5-2 .94l-5.5-4.07-2.66 2.57c-.3.3-.55.56-1.1.56-.72 0-.6-.27-.84-.95L6.3 13.7l-5.45-1.7c-1.18-.35-1.19-1.16.26-1.75l21.26-8.2c.97-.43 1.9.24 1.53 1.73z"/>
+                    </svg>
+                    Отзывы
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="about-section">
+        <div class="container">
+            <h2 class="section-title">О нас</h2>
+            <div class="about-content">
+                <p>Мы - эксперты в области виртуальной валюты для GTA RP. Наши операторы всегда онлайн и готовы ответить на ваши вопросы. Если вы хотите продать/купить игровую валюту, вы всегда можете связаться с нами, написав в <a href="https://t.me/whitevirts_ru" class="telegram-link" rel="noopener noreferrer">Telegram</a>.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Наши преимущества</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <span class="benefit-icon">⚡</span>
+                    <h3>Мгновенная доставка</h3>
+                    <p>Оплата → Получение в течение 30 минут. Никаких задержек - только оперативная работа!</p>
+                </div>
+
+                <div class="benefit-card">
+                    <span class="benefit-icon">🛡️</span>
+                    <h3>Безопасность</h3>
+                    <p>Советы по минимизации риска для вашего аккаунта. При публикации отзывов мы всегда скрываем персональные данные, все наши переписки анонимны. </p>
+                </div>
+
+                <div class="benefit-card">
+                    <span class="benefit-icon">📢</span>
+                    <h3>Прозрачность</h3>
+                    <p>Все отзывы доступны в нашем Telegram-канале. Фото переписок + квитанции переводов.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <span class="benefit-icon">🎮</span>
+                    <h3>Поддержка серверов</h3>
+                    <p>GTA5 RP, Majestic, Radmir RP, Grand RP и другие популярные проекты.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <span class="benefit-icon">💡</span>
+                    <h3>Экспертные советы</h3>
+                    <p>Расскажем как подготовить аккаунт перед получением валюты и после получения.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <span class="benefit-icon">💵</span>
+                    <h3>Выкуп валюты</h3>
+                    <p>Мгновенные выплаты по выгодному курсу. Быстро, удобно, надежно!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Поддерживаемые проекты</h2>
+            <div class="projects-grid">
+                <div class="project">GTA 5 RP</div>
+                <div class="project">Majestic</div>
+                <div class="project">Radmir RP</div>
+                <div class="project">Grand RP</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="promo-banner">
+            <h3>🎉 Приведи друга и получи 10% скидку!</h3>
+            <p>Работает для всех наших услуг. Делитесь с друзьями и экономьте вместе!</p>
+        </div>
+    </div>
+
+    <section class="reviews-section">
+        <div class="container">
+            <h2 class="section-title">Наши достижения</h2>
+            <div class="counter-wrapper">
+                <span class="reviews-counter" id="counter">0</span>
+                <span class="counter-plus">+</span>
+            </div>
+            <h3>Довольных клиентов</h3>
+            <p>Все отзывы можно просмотреть в нашем Telegram-канале</p>
+            <div class="cta-buttons" style="margin-top: 40px;">
+                <a href="https://t.me/whitevirtsdeals" class="btn" rel="noopener noreferrer">
+                    <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.91 3.79L20.3 20.84c-.25 1.21-.98 1.5-2 .94l-5.5-4.07-2.66 2.57c-.3.3-.55.56-1.1.56-.72 0-.6-.27-.84-.95L6.3 13.7l-5.45-1.7c-1.18-.35-1.19-1.16.26-1.75l21.26-8.2c.97-.43 1.9.24 1.53 1.73z"/>
+                    </svg>
+                    Читать отзывы
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="copyright">© 2025 Whitevirts. Все права защищены</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://t.me/whitevirts_ru" class="support-badge telegram-contact" title="Написать в поддержку" rel="noopener noreferrer">
+        <svg class="headset-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/>
+        </svg>
+    </a>
+
+    <script>
+        // Создание частиц для фона
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 25;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Случайный размер
+                const size = Math.random() * 25 + 8;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Случайная позиция
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                
+                // Случайная задержка анимации
+                const delay = Math.random() * 15;
+                particle.style.animationDelay = `${delay}s`;
+                
+                // Случайный цвет
+                const colors = ['rgba(188, 19, 254, 0.2)', 'rgba(138, 43, 226, 0.2)', 'rgba(216, 191, 216, 0.2)'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.background = color;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // Анимация счетчика с плавным ускорением/замедлением
+        function animateCounter() {
+            const counter = document.getElementById('counter');
+            const target = 700;
+            let count = 0;
+            const duration = 20000; // 20 секунды
+            const startTime = performance.now();
+            
+            // Функция плавности (easeOutQuad)
+            function easeOutQuad(t) {
+                return t * (2 - t);
+            }
+            
+            function updateCounter(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                let progress = Math.min(elapsedTime / duration, 1);
+                
+                // Применяем функцию плавности
+                progress = easeOutQuad(progress);
+                
+                count = Math.floor(progress * target);
+                counter.textContent = count;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.textContent = target;
+                }
+            }
+            
+            requestAnimationFrame(updateCounter);
+        }
+        
+        // Анимация при скролле
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.benefit-card, .project');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+        
+        // Инициализация при загрузке страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            animateCounter();
+            animateOnScroll();
+        });
+    </script>
+</body>
+</html>
